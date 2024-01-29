@@ -31,6 +31,6 @@ func getOneEvent(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-
+	io.WriteString(w, "Hello, getOneEvent!\n")
 	/* json.NewEncoder(w).Encode(allAddress) */
 }
