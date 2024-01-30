@@ -24,6 +24,6 @@ func Index(w http.ResponseWriter, r *http.Request) {
 func main() {
     http.HandleFunc("/", Index)
 
-    err := http.ListenAndServe(":"+os.Getenv("PORT"),, nil)
+    err := http.ListenAndServe(":"+os.Getenv("PORT"), nil)
     check(err)
 }
