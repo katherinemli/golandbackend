@@ -18,7 +18,6 @@ func main() {
 		AllowedOrigins:   []string{"http://localhost:8080", "https://ornate-shortbread-20015a.netlify.app"},
 		AllowCredentials: true,
 	})
-	io.WriteString(w, "Hello, getOneEvent!\n")
 	//os.Setenv("PORT", "3000")
 	handler := c.Handler(router)
 	port := os.Getenv(("PORT"))
