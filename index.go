@@ -22,7 +22,7 @@ func main() {
 	router.HandleFunc("/", getOneEvent).Methods("GET")
 	router.HandleFunc("/createRoute/{id}", createRouter).Methods("POST")
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:8080", "https://ornate-shortbread-20015a.netlify.app"},
+		AllowedOrigins:   []string{"http://10.11.14.50", "https://ornate-shortbread-20015a.netlify.app"},
 		AllowCredentials: true,
 	})
 	//os.Setenv("PORT", "3000")
