@@ -25,7 +25,7 @@ func main() {
 		AllowedOrigins:   []string{"10.11.14.50", "https://ornate-shortbread-20015a.netlify.app"},
 		AllowCredentials: true,
 	})
-	//os.Setenv("PORT", "3000")
+	os.Setenv("PORT", "3000")
 	handler := c.Handler(router)
 	port := os.Getenv(("PORT"))
 	fmt.Println("port:", port)
