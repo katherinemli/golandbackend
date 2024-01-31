@@ -8,6 +8,10 @@ import (
 	"strconv"
     "strings"
 	"os"
+	"github.com/rs/cors"
+	"log"
+
+	"github.com/gorilla/mux"
 )
 type chartData struct {
     Values []int `json:"value"`
@@ -49,9 +53,13 @@ func readFile(fname string) (nums []int, err error) {
     return nums, nil
 }
 func main() {
-    http.HandleFunc("/api", Index)
-	err := http.ListenAndServe(":"+os.Getenv("PORT"), nil)
-    //err := http.ListenAndServe(":3000", nil)
-    check(err)
-	
+	router := mux.NewRouter().StrictSlash(true)
+	router.HandleFunc("/api", Index).Methods("GET")
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:8080", "https://katherineliberonarouter.netlify.app"},
+		AllowCredentials: true,
+	})
+	handler := c.Handler(router)
+	port := os.Getenv(("PORT"))
+	log.Fatal(http.ListenAndServe(":"+port, handler))
 }
