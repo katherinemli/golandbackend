@@ -98,9 +98,9 @@ func readFileLatLong(fname string) allAddress {
 func main() {
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/api", Index).Methods("GET")
-	router.HandleFunc("/api/points", Points).Methods("GET")
+	router.HandleFunc("/points", Points).Methods("GET")
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:8080", "https://ornate-shortbread-20015a.netlify.app/"},
+		AllowedOrigins:   []string{"https://ornate-shortbread-20015a.netlify.app", "http://localhost:8080"},
 		AllowCredentials: true,
 	})
 	handler := c.Handler(router)
