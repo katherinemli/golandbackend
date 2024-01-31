@@ -56,7 +56,7 @@ func main() {
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/api", Index).Methods("GET")
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:8080", "https://katherineliberonarouter.netlify.app"},
+		AllowedOrigins:   []string{"http://localhost:8080", "https://ornate-shortbread-20015a.netlify.app/"},
 		AllowCredentials: true,
 	})
 	handler := c.Handler(router)
