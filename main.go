@@ -7,7 +7,6 @@ import (
     "net/http"
 	"strconv"
     "strings"
-	"os"
 )
 type chartData struct {
     Values []int `json:"value"`
@@ -49,9 +48,9 @@ func readFile(fname string) (nums []int, err error) {
     return nums, nil
 }
 func main() {
-    http.HandleFunc("/", Index)
-	err := http.ListenAndServe(":"+os.Getenv("PORT"), nil)
-    //err := http.ListenAndServe(":8080", nil)
+    http.HandleFunc("/api", Index)
+	//err := http.ListenAndServe(":"+os.Getenv("PORT"), nil)
+    err := http.ListenAndServe(":3000", nil)
     check(err)
 	
 }
