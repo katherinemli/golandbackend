@@ -1,20 +1,22 @@
 package main
 
 import (
-    "fmt"
-    "io/ioutil"
 	"encoding/json"
-    "net/http"
-	"strconv"
-    "strings"
-	"os"
-	"github.com/rs/cors"
+	"fmt"
+	"io/ioutil"
 	"log"
+	"net/http"
+	"os"
+	"strconv"
+	"strings"
+
+	"github.com/rs/cors"
 
 	"github.com/gorilla/mux"
 )
+
 type chartData struct {
-    Values []int `json:"value"`
+	Values []int `json:"value"`
 }
 type address struct {
 	Id       int     `json:"id"`
@@ -24,61 +26,78 @@ type address struct {
 }
 
 type allAddress []address
-func check(e error) {
-    if e != nil {
-        fmt.Println(e)
-        panic(e)
-    }
-}
 
 func Index(w http.ResponseWriter, r *http.Request) {
-    nums, err := readFile("datachart.txt")
-    if err != nil { panic(err) }
-    fmt.Println(nums)
-    resProcess := &chartData{Values: nums}
-    w.Header().Set("Content-Type", "application/json")
-    w.WriteHeader(http.StatusCreated)
-    json.NewEncoder(w).Encode(resProcess)
+	nums, err := readFile("datachart.txt")
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(nums)
+	resProcess := &chartData{Values: nums}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(resProcess)
 }
 func Points(w http.ResponseWriter, r *http.Request) {
-    allAddress := readFileLatLong("Point_Of_Interest.txt")
-    //resProcess := &chartData{Values: nums}
-    w.Header().Set("Content-Type", "application/json")
-    w.WriteHeader(http.StatusCreated)
-    json.NewEncoder(w).Encode(allAddress)
+	allAddress := readFileLatLong("Point_Of_Interest.txt")
+	//resProcess := &chartData{Values: nums}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(allAddress)
+}
+func Data(w http.ResponseWriter, r *http.Request) {
+	nums, err := readFile("datamodemchart.txt")
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(nums)
+	resProcess := &chartData{Values: nums}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(resProcess)
 }
 func readFile(fname string) (nums []int, err error) {
-    b, err := ioutil.ReadFile(fname)
-    if err != nil { return nil, err }
+	b, err := ioutil.ReadFile(fname)
+	if err != nil {
+		return nil, err
+	}
 
-    lines := strings.Split(string(b), "\n")
-    // Assign cap to avoid resize on every append.
-    nums = make([]int, 0, len(lines))
+	lines := strings.Split(string(b), "\n")
+	// Assign cap to avoid resize on every append.
+	nums = make([]int, 0, len(lines))
 
-    for _, l := range lines {
-        // Empty line occurs at the end of the file when we use Split.
-        if len(l) == 0 { continue }
-        // Atoi better suits the job when we know exactly what we're dealing
-        // with. Scanf is the more general option.
-        n, err := strconv.Atoi(l)
-        if err != nil { return nil, err }
-        nums = append(nums, n)
-    }
+	for _, l := range lines {
+		// Empty line occurs at the end of the file when we use Split.
+		if len(l) == 0 {
+			continue
+		}
+		// Atoi better suits the job when we know exactly what we're dealing
+		// with. Scanf is the more general option.
+		n, err := strconv.Atoi(l)
+		if err != nil {
+			return nil, err
+		}
+		nums = append(nums, n)
+	}
 
-    return nums, nil
+	return nums, nil
 }
 func readFileLatLong(fname string) allAddress {
-    var addressSelected allAddress
+	var addressSelected allAddress
 	b, err := ioutil.ReadFile(fname)
-    if err != nil { return nil }
+	if err != nil {
+		return nil
+	}
 
-    lines := strings.Split(string(b), "\n")
-	
-    // Assign cap to avoid resize on every append.
-    for idx, l := range lines {
+	lines := strings.Split(string(b), "\n")
+
+	// Assign cap to avoid resize on every append.
+	for idx, l := range lines {
 		var addressFinal address
-        // Empty line occurs at the end of the file when we use Split.
-        if len(l) == 0 { continue }
+		// Empty line occurs at the end of the file when we use Split.
+		if len(l) == 0 {
+			continue
+		}
 		geoElem := strings.Split(string(l), ",")
 		addressFinal.Id = idx
 		latfloat, _ := strconv.ParseFloat(geoElem[0], 64)
@@ -86,12 +105,12 @@ func readFileLatLong(fname string) allAddress {
 		addressFinal.Lat = latfloat
 		addressFinal.Long = longfloat
 		addressFinal.Location = strings.TrimRight(geoElem[2], "\r")
-        // Atoi better suits the job when we know exactly what we're dealing
-        // with. Scanf is the more general option.
-        //n, err := strconv.Atoi(l)
-        //if err != nil { return nil, err }
+		// Atoi better suits the job when we know exactly what we're dealing
+		// with. Scanf is the more general option.
+		//n, err := strconv.Atoi(l)
+		//if err != nil { return nil, err }
 		addressSelected = append(addressSelected, addressFinal)
-    }
+	}
 
 	return addressSelected
 }
@@ -99,8 +118,9 @@ func main() {
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/api", Index).Methods("GET")
 	router.HandleFunc("/points", Points).Methods("GET")
+	router.HandleFunc("/data", Data).Methods("GET")
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"https://ornate-shortbread-20015a.netlify.app", "http://localhost:8080"},
+		AllowedOrigins:   []string{"https://ornate-shortbread-20015a.netlify.app", "http://localhost:8080", "https://wondrous-dango-4bd51e.netlify.app"},
 		AllowCredentials: true,
 	})
 	handler := c.Handler(router)
