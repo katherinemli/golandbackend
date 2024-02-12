@@ -46,7 +46,7 @@ func Points(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(allAddress)
 }
 func Data(w http.ResponseWriter, r *http.Request) {
-	nums, err := readFile("datamodemchart.txt")
+	nums, err := readFile("datamodemchart2.txt")
 	if err != nil {
 		panic(err)
 	}
@@ -120,7 +120,7 @@ func main() {
 	router.HandleFunc("/points", Points).Methods("GET")
 	router.HandleFunc("/data", Data).Methods("GET")
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"https://ornate-shortbread-20015a.netlify.app", "http://localhost:8080", "https://wondrous-dango-4bd51e.netlify.app"},
+		AllowedOrigins:   []string{"https://ornate-shortbread-20015a.netlify.app", "http://localhost:8080", "http://127.0.0.1:5500", "https://wondrous-dango-4bd51e.netlify.app"},
 		AllowCredentials: true,
 	})
 	handler := c.Handler(router)
