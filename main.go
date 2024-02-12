@@ -114,11 +114,30 @@ func readFileLatLong(fname string) allAddress {
 
 	return addressSelected
 }
+func createRouter(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("entre")
+	vars := mux.Vars(r)
+	id, ok := vars["id"]
+	if !ok {
+		fmt.Println("id is missing in parameters")
+	}
+	fmt.Println(`id := `, id)
+	fmt.Println(`r.Body := `, r.Body)
+
+	w.WriteHeader(http.StatusOK)
+	jsonResponse, jsonError := json.Marshal(id)
+
+	if jsonError != nil {
+		fmt.Println("Unable to encode JSON")
+	}
+	w.Write(jsonResponse)
+}
 func main() {
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/api", Index).Methods("GET")
 	router.HandleFunc("/points", Points).Methods("GET")
 	router.HandleFunc("/data", Data).Methods("GET")
+	router.HandleFunc("/createRoute/{id}", createRouter).Methods("POST")
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"https://ornate-shortbread-20015a.netlify.app", "http://localhost:8080", "http://127.0.0.1:5500", "https://wondrous-dango-4bd51e.netlify.app", "https://magenta-dusk-9af42a.netlify.app"},
 		AllowCredentials: true,
