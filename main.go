@@ -121,23 +121,26 @@ func createRouter(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		fmt.Println("id is missing in parameters")
 	}
+	idNumber, err := strconv.Atoi(id)
+	if err != nil {
+		// ... handle error
+		panic(err)
+	}
 	fmt.Println(`id := `, id)
 	fmt.Println(`r.Body := `, r.Body)
-
-	w.WriteHeader(http.StatusOK)
-	jsonResponse, jsonError := json.Marshal(id)
-
-	if jsonError != nil {
-		fmt.Println("Unable to encode JSON")
-	}
-	w.Write(jsonResponse)
+	allAddress := readFileLatLong("Point_Of_Interest.txt")
+	//resProcess := &chartData{Values: nums}
+	allAddressSliced := allAddress[1:idNumber]
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(allAddressSliced)
 }
 func main() {
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/api", Index).Methods("GET")
 	router.HandleFunc("/points", Points).Methods("GET")
 	router.HandleFunc("/data", Data).Methods("GET")
-	router.HandleFunc("/createRoute/{id}", createRouter).Methods("POST")
+	router.HandleFunc("/createRoute/{id}", createRouter).Methods("GET")
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"https://ornate-shortbread-20015a.netlify.app", "http://localhost:8080", "http://127.0.0.1:5500", "https://wondrous-dango-4bd51e.netlify.app", "https://magenta-dusk-9af42a.netlify.app"},
 		AllowCredentials: true,
