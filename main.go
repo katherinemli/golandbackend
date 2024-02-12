@@ -120,7 +120,7 @@ func main() {
 	router.HandleFunc("/points", Points).Methods("GET")
 	router.HandleFunc("/data", Data).Methods("GET")
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"https://ornate-shortbread-20015a.netlify.app", "http://localhost:8080", "http://127.0.0.1:5500", "https://wondrous-dango-4bd51e.netlify.app"},
+		AllowedOrigins:   []string{"https://ornate-shortbread-20015a.netlify.app", "http://localhost:8080", "http://127.0.0.1:5500", "https://wondrous-dango-4bd51e.netlify.app", "https://magenta-dusk-9af42a.netlify.app"},
 		AllowCredentials: true,
 	})
 	handler := c.Handler(router)
